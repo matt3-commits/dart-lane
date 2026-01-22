@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,8 +149,13 @@ function submitCode() {
     message.style.color = "#4cff4c";
 
     setTimeout(() => {
-      if (window.fully && fully.startApplication) {
-        fully.startApplication(GRANDARTS_PACKAGE);
+      if (if (window.fully && fully.startApplication) {
+  fully.startApplication(GRANDARTS_PACKAGE);
+} else if (window.location.href.startsWith("http")) {
+  // Android intent fallback
+  window.location.href = "intent://#Intent;package=jp.luxza.GranDarts;end";
+}
+);
       } else {
         alert("Fully Kiosk not detected.\nOpen this page INSIDE Fully Kiosk.");
       }
