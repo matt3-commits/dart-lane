@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,11 +73,7 @@ const GRANDARTS_PACKAGE = "jp.luxza.GranDarts";
 
 let input = "";
 
-// Cache-busting for Fully Kiosk
-const randomQuery = "_cb=" + new Date().getTime();
-if(!window.location.href.includes(randomQuery)) {
-  window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + randomQuery;
-}
+//
 
 function press(num){ if(input.length<4) input+=num; updateDisplay(); }
 function clearCode(){ input=""; updateDisplay(); showMessage("", ""); }
@@ -109,4 +108,3 @@ function logAccess(code){
 
 </body>
 </html>
-
