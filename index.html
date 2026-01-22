@@ -1,10 +1,13 @@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lane Passcode</title>
+
 <style>
 body {
   margin:0;
@@ -25,7 +28,7 @@ h1 {
   font-size:2.5em;
   letter-spacing:1px;
   color:#00ffd0;
-  text-shadow: 0 0 10px #00ffd0, 0 0 20px #00ffd0;
+  text-shadow:0 0 10px #00ffd0, 0 0 20px #00ffd0;
 }
 
 .display {
@@ -39,38 +42,12 @@ h1 {
   height:30px;
   font-size:1.2em;
   margin-top:10px;
-  transition: all 0.3s;
-}
-
-.message.success {
-  color:#4cff4c;
-  text-shadow:0 0 15px #4cff4c;
-  animation: glow 0.8s ease-in-out;
-}
-
-.message.error {
-  color:#ff4c4c;
-  text-shadow:0 0 15px #ff4c4c;
-  animation: shake 0.5s;
-}
-
-@keyframes shake {
-  0%{transform:translateX(0);}
-  25%{transform:translateX(-10px);}
-  50%{transform:translateX(10px);}
-  75%{transform:translateX(-10px);}
-  100%{transform:translateX(0);}
-}
-
-@keyframes glow {
-  0%,100%{text-shadow:0 0 15px #4cff4c;}
-  50%{text-shadow:0 0 25px #4cff4c;}
 }
 
 .keypad {
   display:grid;
   grid-template-columns:repeat(3, 100px);
-  grid-gap:20px;
+  gap:20px;
   justify-content:center;
 }
 
@@ -83,22 +60,16 @@ h1 {
   justify-content:center;
   align-items:center;
   font-size:2em;
-  cursor:pointer;
   color:#00ffd0;
   box-shadow:0 0 10px #00ffd0;
-  transition: all 0.1s;
-  
+
   user-select:none;
   -webkit-user-select:none;
-  -ms-user-select:none;
-  -moz-user-select:none;
-  
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color:transparent;
 }
 
-.key:active {
-  transform:scale(0.95);
+.key.pressed {
+  transform:scale(0.92);
   box-shadow:0 0 20px #00ffd0;
   background:#111;
 }
@@ -107,93 +78,93 @@ h1 {
 .key.submit { color:#4cff4c; box-shadow:0 0 10px #4cff4c; }
 </style>
 </head>
-<body>
 
+<body>
 <div class="container">
   <h1>Enter Lane Passcode</h1>
   <div class="display" id="display">●●●●</div>
 
   <div class="keypad">
-    <div class="key" onclick="press(1)" ontouchend="press(1)">1</div>
-    <div class="key" onclick="press(2)" ontouchend="press(2)">2</div>
-    <div class="key" onclick="press(3)" ontouchend="press(3)">3</div>
-    <div class="key" onclick="press(4)" ontouchend="press(4)">4</div>
-    <div class="key" onclick="press(5)" ontouchend="press(5)">5</div>
-    <div class="key" onclick="press(6)" ontouchend="press(6)">6</div>
-    <div class="key" onclick="press(7)" ontouchend="press(7)">7</div>
-    <div class="key" onclick="press(8)" ontouchend="press(8)">8</div>
-    <div class="key" onclick="press(9)" ontouchend="press(9)">9</div>
-    <div class="key clear" onclick="clearCode()" ontouchend="clearCode()">C</div>
-    <div class="key" onclick="press(0)" ontouchend="press(0)">0</div>
-    <div class="key submit" onclick="submitCode()" ontouchend="submitCode()">✔</div>
+    <div class="key" data-num="1">1</div>
+    <div class="key" data-num="2">2</div>
+    <div class="key" data-num="3">3</div>
+    <div class="key" data-num="4">4</div>
+    <div class="key" data-num="5">5</div>
+    <div class="key" data-num="6">6</div>
+    <div class="key" data-num="7">7</div>
+    <div class="key" data-num="8">8</div>
+    <div class="key" data-num="9">9</div>
+    <div class="key clear" data-action="clear">C</div>
+    <div class="key" data-num="0">0</div>
+    <div class="key submit" data-action="submit">✔</div>
   </div>
 
   <div class="message" id="message"></div>
 </div>
 
 <script>
-const lanePasscodes = { "Lane 3": "1234" };
-let currentLane = "Lane 3";
-
-// Replace with your deployed Google Apps Script Web App URL
-const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw9kCgKQCHvCVO3-eTzGFcjF2rUy6kjyktfdLo13y8yn6-H18J6cZvEZbpxhAkQm4keSw/exec";
-
-// Replace with your GranDarts package
+const PASSCODE = "1234";
 const GRANDARTS_PACKAGE = "jp.luxza.GranDarts";
 
 let input = "";
 
-function press(num){
-  event.preventDefault();
-  if(input.length < 4) input += num;
-  updateDisplay();
+const display = document.getElementById("display");
+const message = document.getElementById("message");
+
+document.querySelectorAll(".key").forEach(key => {
+  key.addEventListener("touchstart", e => handleKey(e, key), { passive:false });
+  key.addEventListener("click", e => handleKey(e, key));
+});
+
+function handleKey(e, key) {
+  e.preventDefault();
+
+  key.classList.add("pressed");
+  setTimeout(() => key.classList.remove("pressed"), 120);
+
+  if (key.dataset.num !== undefined) {
+    if (input.length < 4) input += key.dataset.num;
+    updateDisplay();
+    return;
+  }
+
+  if (key.dataset.action === "clear") {
+    input = "";
+    updateDisplay();
+    message.textContent = "";
+    return;
+  }
+
+  if (key.dataset.action === "submit") {
+    submitCode();
+  }
 }
 
-function clearCode(){
-  event.preventDefault();
-  input = "";
-  updateDisplay();
-  showMessage("", "");
+function updateDisplay() {
+  display.textContent =
+    "●".repeat(input.length) + "●".repeat(4 - input.length);
 }
 
-function updateDisplay(){
-  document.getElementById("display").textContent = "●".repeat(input.length) + "●".repeat(4 - input.length);
-}
+function submitCode() {
+  if (input === PASSCODE) {
+    message.textContent = "Access Granted";
+    message.style.color = "#4cff4c";
 
-function showMessage(msg, type){
-  const el = document.getElementById("message");
-  el.textContent = msg;
-  el.className = type ? `message ${type}` : "message";
-}
-
-function submitCode(){
-  event.preventDefault();
-  if(input.trim() === lanePasscodes[currentLane]){
-    showMessage("Access Granted","success");
-    logAccess(input.trim());
-    setTimeout(()=>{
-      if(window.fully){
-        fully.startApplication
+    setTimeout(() => {
+      if (window.fully && fully.startApplication) {
+        fully.startApplication(GRANDARTS_PACKAGE);
+      } else {
+        alert("Fully Kiosk not detected.\nOpen this page INSIDE Fully Kiosk.");
       }
-    }, 500);
+    }, 400);
+
   } else {
-    showMessage("Incorrect Passcode","error");
+    message.textContent = "Incorrect Passcode";
+    message.style.color = "#ff4c4c";
     input = "";
     updateDisplay();
   }
 }
-
-function logAccess(code){
-  fetch(GOOGLE_SHEET_WEBAPP_URL, {
-    method:"POST",
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({passcode: code, lane: currentLane})
-  })
-  .then(r=>r.json())
-  .then(res=>console.log("Logged:", res))
-  .catch(err=>console.error("Logging failed:", err));
-}
 </script>
-
 </body>
 </html>
