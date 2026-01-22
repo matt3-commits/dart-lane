@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,24 +123,20 @@
 </div>
 
 <script>
-  // ----- CONFIGURATION -----
-  const lanePasscodes = {
-    "Lane 1": "1234",
-    "Lane 2": "5678",
-    "Lane 3": "1234" // test passcode
-  };
+  // ----- CONFIG -----
+  const lanePasscodes = { "Lane 3": "1234" }; // test passcode
   let currentLane = "Lane 3";
 
-  // Google Apps Script Web App URL (replace with your actual Web App URL)
-  const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxfiGRWIKCjpUClaqeR2r9uVgpwUowAC9-5bahctEAGGV6CK4SSI7LD4bTnjU-PeEPLbQ/exec";
+  // Replace with your actual Google Apps Script Web App URL
+  const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzJm_wIEPoT6n1vikLuo-K4_maaH1kmrbLMahTUTc2RDVlEOTE0Ug81GYI2zspPaG_sxw/exec";
 
-  // GranDarts Android package name
+  // Replace with your GranDarts Android package
   const GRANDARTS_PACKAGE = "jp.luxza.GranDarts";
 
   // ----- INTERNAL -----
   let input = "";
 
-  // Cache-busting for Fully Kiosk
+  // Cache-bgranor Fully Kiosk
   const randomQuery = "_cb=" + new Date().getTime();
   if(!window.location.href.includes(randomQuery)) {
     window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + randomQuery;
@@ -170,7 +165,6 @@
   }
 
   function submitCode() {
-    console.log("Entered:", input, "Expected:", lanePasscodes[currentLane]);
     if(input.trim() === lanePasscodes[currentLane]) {
       showMessage("Access Granted", "success");
       logAccess(input.trim());
