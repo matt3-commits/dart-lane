@@ -6,38 +6,103 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lane Passcode</title>
 <style>
-.key {
-  user-select: none;    /* Prevent text highlighting */
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -moz-user-select: none;
+body {
+  margin:0;
+  height:100vh;
+  background: radial-gradient(circle at center, #121212 0%, #1e1e1e 100%);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Segoe UI', sans-serif;
+  color:white;
+  overflow:hidden;
 }
 
-body {
-  margin:0; height:100vh;
-  background: radial-gradient(circle at center, #121212 0%, #1e1e1e 100%);
-  display:flex; justify-content:center; align-items:center;
-  font-family: 'Segoe UI', sans-serif; color:white; overflow:hidden;
-}
 .container { text-align:center; }
+
 h1 {
-  margin-bottom:30px; font-size:2.5em; letter-spacing:1px;
-  color:#00ffd0; text-shadow: 0 0 10px #00ffd0, 0 0 20px #00ffd0;
+  margin-bottom:30px;
+  font-size:2.5em;
+  letter-spacing:1px;
+  color:#00ffd0;
+  text-shadow: 0 0 10px #00ffd0, 0 0 20px #00ffd0;
 }
-.display { font-size:2.5em; letter-spacing:15px; margin-bottom:30px; height:60px; }
-.message { height:30px; font-size:1.2em; margin-top:10px; transition: all 0.3s; }
-.message.success { color:#4cff4c; text-shadow:0 0 15px #4cff4c; animation: glow 0.8s ease-in-out; }
-.message.error { color:#ff4c4c; text-shadow:0 0 15px #ff4c4c; animation: shake 0.5s; }
-@keyframes shake {0%{transform:translateX(0);}25%{transform:translateX(-10px);}50%{transform:translateX(10px);}75%{transform:translateX(-10px);}100%{transform:translateX(0);}}
-@keyframes glow {0%,100%{text-shadow:0 0 15px #4cff4c;}50%{text-shadow:0 0 25px #4cff4c;}}
-.keypad { display:grid; grid-template-columns:repeat(3, 100px); grid-gap:20px; justify-content:center; }
+
+.display {
+  font-size:2.5em;
+  letter-spacing:15px;
+  margin-bottom:30px;
+  height:60px;
+}
+
+.message {
+  height:30px;
+  font-size:1.2em;
+  margin-top:10px;
+  transition: all 0.3s;
+}
+
+.message.success {
+  color:#4cff4c;
+  text-shadow:0 0 15px #4cff4c;
+  animation: glow 0.8s ease-in-out;
+}
+
+.message.error {
+  color:#ff4c4c;
+  text-shadow:0 0 15px #ff4c4c;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-10px);}
+  50%{transform:translateX(10px);}
+  75%{transform:translateX(-10px);}
+  100%{transform:translateX(0);}
+}
+
+@keyframes glow {
+  0%,100%{text-shadow:0 0 15px #4cff4c;}
+  50%{text-shadow:0 0 25px #4cff4c;}
+}
+
+.keypad {
+  display:grid;
+  grid-template-columns:repeat(3, 100px);
+  grid-gap:20px;
+  justify-content:center;
+}
+
 .key {
-  width:100px; height:100px; background:#222; border-radius:20px;
-  display:flex; justify-content:center; align-items:center; font-size:2em;
-  cursor:pointer; color:#00ffd0; box-shadow:0 0 10px #00ffd0; transition: all 0.1s;
+  width:100px;
+  height:100px;
+  background:#222;
+  border-radius:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2em;
+  cursor:pointer;
+  color:#00ffd0;
+  box-shadow:0 0 10px #00ffd0;
+  transition: all 0.1s;
+  
   user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+  -moz-user-select:none;
+  
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
-.key:active { transform:scale(0.95); box-shadow:0 0 20px #00ffd0; background:#111; }
+
+.key:active {
+  transform:scale(0.95);
+  box-shadow:0 0 20px #00ffd0;
+  background:#111;
+}
+
 .key.clear { color:#ff4c4c; box-shadow:0 0 10px #ff4c4c; }
 .key.submit { color:#4cff4c; box-shadow:0 0 10px #4cff4c; }
 </style>
@@ -70,44 +135,65 @@ h1 {
 const lanePasscodes = { "Lane 3": "1234" };
 let currentLane = "Lane 3";
 
-// Replace with your actual Web App URL
+// Replace with your deployed Google Apps Script Web App URL
 const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw9kCgKQCHvCVO3-eTzGFcjF2rUy6kjyktfdLo13y8yn6-H18J6cZvEZbpxhAkQm4keSw/exec";
 
-// Replace with your GranDarts Android package
+// Replace with your GranDarts package
 const GRANDARTS_PACKAGE = "jp.luxza.GranDarts";
 
 let input = "";
 
-//
+function press(num){
+  event.preventDefault();
+  if(input.length < 4) input += num;
+  updateDisplay();
+}
 
-function press(num){ if(input.length<4) input+=num; updateDisplay(); }
-function clearCode(){ input=""; updateDisplay(); showMessage("", ""); }
-function updateDisplay(){ document.getElementById("display").textContent = "●".repeat(input.length)+"●".repeat(4-input.length); }
-function showMessage(msg,type){ const el=document.getElementById("message"); el.textContent=msg; el.className=type?`message ${type}`:"message"; }
+function clearCode(){
+  event.preventDefault();
+  input = "";
+  updateDisplay();
+  showMessage("", "");
+}
+
+function updateDisplay(){
+  document.getElementById("display").textContent = "●".repeat(input.length) + "●".repeat(4 - input.length);
+}
+
+function showMessage(msg, type){
+  const el = document.getElementById("message");
+  el.textContent = msg;
+  el.className = type ? `message ${type}` : "message";
+}
 
 function submitCode(){
-  if(input.trim()===lanePasscodes[currentLane]){
+  event.preventDefault();
+  if(input.trim() === lanePasscodes[currentLane]){
     showMessage("Access Granted","success");
     logAccess(input.trim());
     setTimeout(()=>{
-      if(window.fully){ fully.startApplication(GRANDARTS_PACKAGE); }
-      else{ alert("Would launch GranDarts here."); }
-    },500);
-  }else{
+      if(window.fully){
+        fully.startApplication(GRANDARTS_PACKAGE);
+      } else {
+        alert("Would launch GranDarts here.");
+      }
+    }, 500);
+  } else {
     showMessage("Incorrect Passcode","error");
-    input=""; updateDisplay();
+    input = "";
+    updateDisplay();
   }
 }
 
 function logAccess(code){
-  fetch(GOOGLE_SHEET_WEBAPP_URL,{
+  fetch(GOOGLE_SHEET_WEBAPP_URL, {
     method:"POST",
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({passcode:code,lane:currentLane})
+    body:JSON.stringify({passcode: code, lane: currentLane})
   })
   .then(r=>r.json())
-  .then(res=>console.log("Logged:",res))
-  .catch(err=>console.error("Logging failed:",err));
+  .then(res=>console.log("Logged:", res))
+  .catch(err=>console.error("Logging failed:", err));
 }
 </script>
 
