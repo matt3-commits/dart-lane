@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,10 +18,7 @@
     overflow:hidden;
   }
 
-  .container {
-    text-align:center;
-  }
-
+  .container { text-align:center; }
   h1 {
     margin-bottom:30px;
     font-size:2.5em;
@@ -126,15 +124,28 @@
 </div>
 
 <script>
-  // Lane-specific passcodes (Lane 3 test code = 1234)
+  // ----- CONFIGURATION -----
   const lanePasscodes = {
     "Lane 1": "1234",
     "Lane 2": "5678",
-    "Lane 3": "1234"
+    "Lane 3": "1234" // test passcode
   };
-
   let currentLane = "Lane 3";
+
+  // Google Apps Script Web App URL (replace with your actual Web App URL)
+  const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyEmrc55Fk8uiAzmpe70krcLR0S8BcE7OcVMP8okohGCgQX-4ebWGisHWtblOmen6cPjQ/exec";
+
+  // GranDarts Android package name
+  const GRANDARTS_PACKAGE = "jp.luxza.GranDarts";
+
+  // ----- INTERNAL -----
   let input = "";
+
+  // Cache-busting for Fully Kiosk
+  const randomQuery = "_cb=" + new Date().getTime();
+  if(!window.location.href.includes(randomQuery)) {
+    window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + randomQuery;
+  }
 
   function press(num) {
     if(input.length < 4) input += num;
@@ -148,8 +159,8 @@
   }
 
   function updateDisplay() {
-    let dots = "●".repeat(input.length) + "●".repeat(4 - input.length);
-    document.getElementById('display').textContent = dots;
+    const dots = "●".repeat(input.length) + "●".repeat(4 - input.length);
+    document.getElementById("display").textContent = dots;
   }
 
   function showMessage(msg, type) {
@@ -159,13 +170,13 @@
   }
 
   function submitCode() {
-    console.log("Entered:", input, "Expected:", lanePasscodes[currentLane]); // Debug
+    console.log("Entered:", input, "Expected:", lanePasscodes[currentLane]);
     if(input.trim() === lanePasscodes[currentLane]) {
       showMessage("Access Granted", "success");
       logAccess(input.trim());
       setTimeout(() => {
         if(window.fully) {
-          fully.startApplication("jp.luxza.GranDarts"); // Replace with actual package
+          fully.startApplication(GRANDARTS_PACKAGE);
         } else {
           alert("Would launch GranDarts here.");
         }
@@ -178,7 +189,7 @@
   }
 
   function logAccess(code) {
-    fetch("matt3-commits.github.io/dart-lane/", { // Replace with Apps Script Web App URL
+    fetch(GOOGLE_SHEET_WEBAPP_URL, {
       method: "POST",
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({passcode: code, lane: currentLane})
