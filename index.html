@@ -63,18 +63,21 @@ if(!localStorage.time) localStorage.time = 60;
 const now = new Date();
 const status = document.getElementById("status");
 
-if(now.getDay() === LEAGUE_DAY && now.getHours() >= START_HOUR && now.getHours() < END_HOUR){
-  status.innerText = LANE + " – Enter Code";
-} else {
+if (now.getDay() === LEAGUE_DAY && now.getHours() >= START_HOUR && now.getHours() < END_HOUR) {
   status.innerText = LANE + " – League Only Thu 6–10 PM";
+  document.getElementById("passcodeSection").style.display = "none";
+} else {
+  status.innerText = LANE + " – Enter Code";
+  document.getElementById("passcodeSection").style.display = "block";
 }
 
 function start(){
-  const now = new Date();
-  if(now.getDay() !== LEAGUE_DAY || now.getHours() < START_HOUR || now.getHours() >= END_HOUR){
-    alert("League play only Thu 6–10 PM");
-    return;
-  }
+  // Off-hours only function
+  // League hours never reach this because the passcode is hidden
+  launchGranDarts();
+}
+
+
 
   if(document.getElementById("code").value === localStorage.code){
     localStorage.code = "USED";
