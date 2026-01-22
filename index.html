@@ -1,172 +1,197 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dart Lane Passcode</title>
+<title>Lane Passcode</title>
 <style>
+  /* --- Reset & body --- */
   body {
-    margin: 0;
-    font-family: sans-serif;
-    background: #0d1117;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    margin:0;
+    height:100vh;
+    background: radial-gradient(circle at center, #121212 0%, #1e1e1e 100%);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family: 'Segoe UI', sans-serif;
+    color:white;
+    overflow:hidden;
   }
-  #leagueNotice {
-    text-align: center;
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    display: none;
+
+  /* --- Container --- */
+  .container {
+    text-align:center;
   }
-  #passcodeDisplay {
-    letter-spacing: 20px;
-    font-size: 2em;
-    margin-bottom: 20px;
+
+  h1 {
+    margin-bottom:30px;
+    font-size:2.5em;
+    letter-spacing:1px;
+    color:#00ffd0;
+    text-shadow: 0 0 10px #00ffd0, 0 0 20px #00ffd0;
   }
-  #keypad {
-    display: grid;
-    grid-template-columns: repeat(3, 80px);
-    grid-gap: 10px;
+
+  /* --- Display --- */
+  .display {
+    font-size:2.5em;
+    letter-spacing:15px;
+    margin-bottom:30px;
+    height:60px;
   }
-  button {
-    width: 80px;
-    height: 80px;
-    font-size: 1.5em;
-    border-radius: 50%;
-    border: none;
-    background: #1e1e1e;
-    color: #fff;
-    cursor: pointer;
+
+  /* --- Message --- */
+  .message {
+    height:30px;
+    font-size:1.2em;
+    margin-top:10px;
+    transition: all 0.3s;
   }
+
+  .message.success {
+    color: #4cff4c;
+    text-shadow: 0 0 15px #4cff4c;
+    animation: glow 0.8s ease-in-out;
   }
-  #staffButton {
-    margin-top: 20px;
-    padding: 20px 20px;
-    font-size: 0.75em;
-    border-radius: 20px;
-    background: #ff9800;
-    color: #000;
+
+  .message.error {
+    color: #ff4c4c;
+    text-shadow: 0 0 15px #ff4c4c;
+    animation: shake 0.5s;
   }
+
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes glow {
+    0%,100% { text-shadow: 0 0 15px #4cff4c; }
+    50% { text-shadow: 0 0 25px #4cff4c; }
+  }
+
+  /* --- Keypad --- */
+  .keypad {
+    display:grid;
+    grid-template-columns:repeat(3, 100px);
+    grid-gap:20px;
+    justify-content:center;
+  }
+
+  .key {
+    width:100px;
+    height:100px;
+    background:#222;
+    border-radius:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:2em;
+    cursor:pointer;
+    color:#00ffd0;
+    box-shadow: 0 0 10px #00ffd0;
+    transition: all 0.1s ease-in-out;
+    user-select:none;
+  }
+
+  .key:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 20px #00ffd0;
+    background:#111;
+  }
+
+  /* Special keys */
+  .key.clear { color:#ff4c4c; box-shadow:0 0 10px #ff4c4c; }
+  .key.submit { color:#4cff4c; box-shadow:0 0 10px #4cff4c; }
 </style>
 </head>
 <body>
 
-<div id="leagueNotice">
-  <h2>League Play in Progress</h2>
-  <p>Public play unavailable</p>
-  <p>Thursday 6:00–10:00 PM</p>
-</div>
-
-<div id="passcodeSection">
-  <div id="passcodeDisplay">••••</div>
-  <div id="keypad">
-    <button onclick="addDigit(1)">1</button>
-    <button onclick="addDigit(2)">2</button>
-    <button onclick="addDigit(3)">3</button>
-    <button onclick="addDigit(4)">4</button>
-    <button onclick="addDigit(5)">5</button>
-    <button onclick="addDigit(6)">6</button>
-    <button onclick="addDigit(7)">7</button>
-    <button onclick="addDigit(8)">8</button>
-    <button onclick="addDigit(9)">9</button>
-    <button onclick="clearPasscode()">C</button>
-    <button onclick="addDigit(0)">0</button>
-    <button onclick="submitPasscode()">✓</button>
+<div class="container">
+  <h1>Enter Lane Passcode</h1>
+  <div class="display" id="display">●●●●</div>
+  <div class="keypad">
+    <div class="key" onclick="press(1)">1</div>
+    <div class="key" onclick="press(2)">2</div>
+    <div class="key" onclick="press(3)">3</div>
+    <div class="key" onclick="press(4)">4</div>
+    <div class="key" onclick="press(5)">5</div>
+    <div class="key" onclick="press(6)">6</div>
+    <div class="key" onclick="press(7)">7</div>
+    <div class="key" onclick="press(8)">8</div>
+    <div class="key" onclick="press(9)">9</div>
+    <div class="key clear" onclick="clearCode()">C</div>
+    <div class="key" onclick="press(0)">0</div>
+    <div class="key submit" onclick="submitCode()">✔</div>
   </div>
+  <div class="message" id="message"></div>
 </div>
-
-<button id="staffButton" onclick="staffOverride()">Staff Override</button>
 
 <script>
-const LEAGUE_DAY = 4; // Thursday
-const START_HOUR = 18;
-const END_HOUR = 22;
-const LANE = "Lane 1";
-const CORRECT_CODE = "1234"; // Change this to your passcode
-
-let enteredCode = "";
-
-// --- Check league hours ---
-function checkLeagueHours() {
-  const now = new Date();
-  const day = now.getDay();
-  const hour = now.getHours();
-
-  if (day === LEAGUE_DAY && hour >= START_HOUR && hour < END_HOUR) {
-    document.getElementById("leagueNotice").style.display = "block";
-    document.getElementById("passcodeSection").style.display = "none";
-  } else {
-    document.getElementById("leagueNotice").style.display = "none";
-    document.getElementById("passcodeSection").style.display = "block";
-  }
-}
-
-// --- Update passcode display ---
-function updateDisplay() {
-  document.getElementById("passcodeDisplay").innerText = "•".repeat(enteredCode.length);
-}
-
-// --- Keypad functions ---
-function addDigit(d) {
-  if (enteredCode.length < 4) {
-    enteredCode += d;
-    updateDisplay();
-  }
-}
-
-function clearPasscode() {
-  enteredCode = "";
-  updateDisplay();
-}
-
-// --- Submit passcode ---
-function submitPasscode() {
-  if (enteredCode === CORRECT_CODE) {
-    launchGranDarts(); // Replace with your actual GranDarts launch code
-    logPasscodeUse(LANE, enteredCode, false);
-    clearPasscode();
-  } else {
-    alert("Invalid Code");
-    clearPasscode();
-  }
-}
-
-// --- Staff override ---
-function staffOverride() {
-  launchGranDarts();
-  logPasscodeUse(LANE, "STAFF_OVERRIDE", true);
-}
-
-// --- Logging to Google Sheets ---
-function logPasscodeUse(lane, code, staff) {
-  const url = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL"; // Replace with your Google Apps Script URL
-  const data = {
-    lane: lane,
-    code: code,
-    staff: staff,
-    timestamp: new Date().toISOString()
+  // Lane-specific passcodes
+  const lanePasscodes = {
+    "Lane 1": "1234",
+    "Lane 2": "5678",
+    "Lane 3": "9012"
   };
 
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' }
-  }).then(res => console.log("Logged:", data))
-    .catch(err => console.error("Logging error:", err));
-}
+  let currentLane = "Lane 3"; // Change lane as needed
+  let input = "";
 
-// --- Placeholder GranDarts launch ---
-function launchGranDarts() {
-  console.log("Launching GranDarts for", LANE);
-  // Replace this with your Full Kiosk launch URL or Android intent
-}
+  function press(num) {
+    if(input.length < 4) input += num;
+    updateDisplay();
+  }
 
-// --- Initialize ---
-window.onload = checkLeagueHours;
+  function clearCode() {
+    input = "";
+    updateDisplay();
+    showMessage("", "");
+  }
+
+  function updateDisplay() {
+    let dots = "●".repeat(input.length) + "●".repeat(4 - input.length);
+    document.getElementById('display').textContent = dots;
+  }
+
+  function showMessage(msg, type) {
+    const el = document.getElementById("message");
+    el.textContent = msg;
+    el.className = type ? `message ${type}` : "message";
+  }
+
+  function submitCode() {
+    if(input === lanePasscodes[currentLane]) {
+      showMessage("Access Granted", "success");
+      logAccess(input);
+      setTimeout(() => {
+        // Fully Kiosk Launch GranDarts App
+        if(window.fully) {
+          fully.startApplication("jp.luxza.GranDarts"); // Replace with actual package
+        } else {
+          alert("Would launch GranDarts here.");
+        }
+      }, 500);
+    } else {
+      showMessage("Incorrect Passcode", "error");
+      input = "";
+      updateDisplay();
+    }
+  }
+
+  function logAccess(code) {
+    fetch "https://matt3-commits.github.io/dart-lane/", { // Replace with Apps Script Web App URL
+      method: "POST",
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({passcode: code, lane: currentLane})
+    })
+    .then(r => r.json())
+    .then(res => console.log("Logged:", res))
+    .catch(err => console.error("Logging failed:", err));
+  }
 </script>
 
 </body>
