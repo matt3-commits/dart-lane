@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,72 +63,7 @@ const lanePasscodes = { "Lane 3": "1234" };
 let currentLane = "Lane 3";
 
 // Replace with your actual Web App URL
-const GOOGLE_SHEET_WEBAPP_URL = "<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lane Passcode</title>
-<style>
-body {
-  margin:0; height:100vh;
-  background: radial-gradient(circle at center, #121212 0%, #1e1e1e 100%);
-  display:flex; justify-content:center; align-items:center;
-  font-family: 'Segoe UI', sans-serif; color:white; overflow:hidden;
-}
-.container { text-align:center; }
-h1 {
-  margin-bottom:30px; font-size:2.5em; letter-spacing:1px;
-  color:#00ffd0; text-shadow: 0 0 10px #00ffd0, 0 0 20px #00ffd0;
-}
-.display { font-size:2.5em; letter-spacing:15px; margin-bottom:30px; height:60px; }
-.message { height:30px; font-size:1.2em; margin-top:10px; transition: all 0.3s; }
-.message.success { color:#4cff4c; text-shadow:0 0 15px #4cff4c; animation: glow 0.8s ease-in-out; }
-.message.error { color:#ff4c4c; text-shadow:0 0 15px #ff4c4c; animation: shake 0.5s; }
-@keyframes shake {0%{transform:translateX(0);}25%{transform:translateX(-10px);}50%{transform:translateX(10px);}75%{transform:translateX(-10px);}100%{transform:translateX(0);}}
-@keyframes glow {0%,100%{text-shadow:0 0 15px #4cff4c;}50%{text-shadow:0 0 25px #4cff4c;}}
-.keypad { display:grid; grid-template-columns:repeat(3, 100px); grid-gap:20px; justify-content:center; }
-.key {
-  width:100px; height:100px; background:#222; border-radius:20px;
-  display:flex; justify-content:center; align-items:center; font-size:2em;
-  cursor:pointer; color:#00ffd0; box-shadow:0 0 10px #00ffd0; transition: all 0.1s;
-  user-select:none;
-}
-.key:active { transform:scale(0.95); box-shadow:0 0 20px #00ffd0; background:#111; }
-.key.clear { color:#ff4c4c; box-shadow:0 0 10px #ff4c4c; }
-.key.submit { color:#4cff4c; box-shadow:0 0 10px #4cff4c; }
-</style>
-</head>
-<body>
-
-<div class="container">
-  <h1>Enter Lane Passcode</h1>
-  <div class="display" id="display">●●●●</div>
-
-  <div class="keypad">
-    <div class="key" onclick="press(1)" ontouchstart="press(1)">1</div>
-    <div class="key" onclick="press(2)" ontouchstart="press(2)">2</div>
-    <div class="key" onclick="press(3)" ontouchstart="press(3)">3</div>
-    <div class="key" onclick="press(4)" ontouchstart="press(4)">4</div>
-    <div class="key" onclick="press(5)" ontouchstart="press(5)">5</div>
-    <div class="key" onclick="press(6)" ontouchstart="press(6)">6</div>
-    <div class="key" onclick="press(7)" ontouchstart="press(7)">7</div>
-    <div class="key" onclick="press(8)" ontouchstart="press(8)">8</div>
-    <div class="key" onclick="press(9)" ontouchstart="press(9)">9</div>
-    <div class="key clear" onclick="clearCode()" ontouchstart="clearCode()">C</div>
-    <div class="key" onclick="press(0)" ontouchstart="press(0)">0</div>
-    <div class="key submit" onclick="submitCode()" ontouchstart="submitCode()">✔</div>
-  </div>
-
-  <div class="message" id="message"></div>
-</div>
-
-<script>
-const lanePasscodes = { "Lane 3": "1234" };
-let currentLane = "Lane 3";
-
-// Replace with your actual Web App URL
-const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/YOUR_WEB_APP_ID/exec";
+const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw9kCgKQCHvCVO3-eTzGFcjF2rUy6kjyktfdLo13y8yn6-H18J6cZvEZbpxhAkQm4keSw/exec";
 
 // Replace with your GranDarts Android package
 const GRANDARTS_PACKAGE = "jp.luxza.GranDarts";
@@ -176,4 +109,4 @@ function logAccess(code){
 
 </body>
 </html>
-";
+
